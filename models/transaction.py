@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from datetime import datetime
 
 def insert_transaction(db, data):
@@ -12,6 +13,9 @@ def insert_transaction(db, data):
 
 def get_all_transactions(db):
     return list(db.transactions.find().sort("date", -1))
+
+def delete_transaction(db, transaction_id):
+    return db.transactions.delete_one({"_id": ObjectId(transaction_id)})
 
 def calculate_summary(db):
     income = 0
