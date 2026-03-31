@@ -6,13 +6,25 @@
     <div class="summary-card expense"><h3>Total Expenses</h3><p>{{ summary.expenses }}</p></div>
     <div class="summary-card balance"><h3>Balance</h3><p>{{ summary.balance }}</p></div>
 </div>
-<h2>Transactions</h2>
-<table>
-    <thead><tr><th>Type</th><th>Amount</th><th>Category</th></tr></thead>
-    <tbody>
-        {% for t in transactions %}
-        <tr><td>{{ t.type }}</td><td>{{ t.amount }}</td><td>{{ t.category }}</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<form action="/generate-insights" method="POST" onsubmit="showSpinner()">
+    <button type="submit" class="ai-button">Generate AI Insights</button>
+</form>
+<div id="loading" class="loading-spinner" style="display:none;">Generating insights...</div>
+<h2 class="section-title">AI Financial Insights</h2>
+<div class="ai-container">
+    {% for report in ai_reports[:2] %}
+    <div class="ai-card">
+        <div class="ai-header">
+            <span class="ai-date">{{ report.created_at.strftime("%d %b %Y - %I:%M %p") }}</span>
+            <span class="score-badge">{{ report.savings_score }}% Savings</span>
+        </div>
+        <p class="ai-text">{{ report.report_text }}</p>
+    </div>
+    {% endfor %}
+</div>
+<script>
+function showSpinner() {
+    document.getElementById("loading").style.display = "block";
+}
+</script>
 {% endblock %}
