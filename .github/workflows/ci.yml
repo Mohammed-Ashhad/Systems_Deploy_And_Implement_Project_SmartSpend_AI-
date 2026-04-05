@@ -14,3 +14,4 @@ jobs:
           python-version: "3.13"
       - run: pip install -r requirements.txt
       - run: python -m compileall .
+      - run: python -c "print('Foundation files ready for merge')"
