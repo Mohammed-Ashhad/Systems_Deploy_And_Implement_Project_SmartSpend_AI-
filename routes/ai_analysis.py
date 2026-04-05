@@ -1,10 +1,31 @@
 from flask import Blueprint, current_app, redirect, url_for
-from google import genai
 from datetime import datetime
 import os
 from collections import defaultdict
 
 ai_bp = Blueprint("ai", __name__)
+
+
+def generate_ai_report(prompt):
+    try:
+        from google import genai
+    except ImportError as exc:
+        raise RuntimeError(
+            "The 'google-genai' package is not installed. Run 'pip install -r requirements.txt'."
+        ) from exc
+
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "Missing Gemini API key. Set GEMINI_API_KEY or GOOGLE_API_KEY in your environment."
+        )
+
+    client = genai.Client(api_key=api_key)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+    return response.text
 
 @ai_bp.route("/generate-insights", methods=["POST"])
 def generate_insights():
@@ -61,12 +82,7 @@ def generate_insights():
     """
 
     try:
-        client = genai.Client()
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-        ai_text = response.text
+        ai_text = generate_ai_report(prompt)
     except Exception as e:
         ai_text = f"AI Error: {str(e)}"
 
