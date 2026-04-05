@@ -42,7 +42,7 @@
                     </select>
                 </div>
 
-                <div class="field">
+                <div class="field" id="category-field">
                     <label for="category">Category</label>
                     <select id="category" name="category">
                         <option>Food</option>
@@ -87,4 +87,25 @@
         </aside>
     </div>
 </section>
+<script>
+    const typeSelect = document.getElementById("type");
+    const categoryField = document.getElementById("category-field");
+    const categorySelect = document.getElementById("category");
+
+    function syncCategoryVisibility() {
+        if (typeSelect.value === "income") {
+            categorySelect.value = "Salary";
+            categoryField.hidden = true;
+            return;
+        }
+
+        categoryField.hidden = false;
+        if (categorySelect.value === "Salary") {
+            categorySelect.value = "Food";
+        }
+    }
+
+    typeSelect.addEventListener("change", syncCategoryVisibility);
+    syncCategoryVisibility();
+</script>
 {% endblock %}

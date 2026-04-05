@@ -2,10 +2,13 @@ from bson.objectid import ObjectId
 from datetime import datetime
 
 def insert_transaction(db, data):
+    transaction_type = data["type"]
+    category = "Salary" if transaction_type == "income" else data["category"]
+
     transaction = {
         "amount": float(data["amount"]),
-        "type": data["type"],
-        "category": data["category"],
+        "type": transaction_type,
+        "category": category,
         "description": data["description"],
         "date": datetime.now()
     }
