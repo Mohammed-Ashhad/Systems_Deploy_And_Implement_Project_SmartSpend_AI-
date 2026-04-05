@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:8
+    container_name: smartspend-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  web:
+    build: .
+    container_name: smartspend-app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+
+volumes:
+  mongo_data:
