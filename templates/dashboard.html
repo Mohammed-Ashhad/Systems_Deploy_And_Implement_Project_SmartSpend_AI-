@@ -1,27 +1,158 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Dashboard</h1>
-<div class="summary-container">
-    <div class="summary-card income"><h3>Total Income</h3><p>{{ summary.income }}</p></div>
-    <div class="summary-card expense"><h3>Total Expenses</h3><p>{{ summary.expenses }}</p></div>
-    <div class="summary-card balance"><h3>Balance</h3><p>{{ summary.balance }}</p></div>
-</div>
-<form action="/generate-insights" method="POST" onsubmit="showSpinner()">
-    <button type="submit" class="ai-button">Generate AI Insights</button>
-</form>
-<div id="loading" class="loading-spinner" style="display:none;">Generating insights...</div>
-<h2 class="section-title">AI Financial Insights</h2>
-<div class="ai-container">
-    {% for report in ai_reports[:2] %}
-    <div class="ai-card">
-        <div class="ai-header">
-            <span class="ai-date">{{ report.created_at.strftime("%d %b %Y - %I:%M %p") }}</span>
-            <span class="score-badge">{{ report.savings_score }}% Savings</span>
+<section class="screen">
+    <div class="screen-head">
+        <div class="screen-copy">
+            <span class="label">Screen 01</span>
+            <h1>Dashboard</h1>
+            <p>Main screen with totals, AI tips, and transactions.</p>
         </div>
-        <p class="ai-text">{{ report.report_text }}</p>
+        <aside class="cover">
+            <h3>Includes</h3>
+            <ul>
+                <li>Summary cards</li>
+                <li>AI cards</li>
+                <li>Generate button</li>
+                <li>Delete action</li>
+            </ul>
+        </aside>
     </div>
-    {% endfor %}
-</div>
+
+    <div class="summary-container">
+        <div class="summary-card income">
+            <h3>Total Income</h3>
+            <p>{{ summary.income }}</p>
+            <small>Salary and other income.</small>
+        </div>
+        <div class="summary-card expense">
+            <h3>Total Expenses</h3>
+            <p>{{ summary.expenses }}</p>
+            <small>Main spending categories.</small>
+        </div>
+        <div class="summary-card balance">
+            <h3>Balance</h3>
+            <p>{{ summary.balance }}</p>
+            <small>Income minus expenses.</small>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="panel">
+            <div class="panel-head">
+                <div>
+                    <h3>AI Financial Insights</h3>
+                    <p>Latest reports</p>
+                </div>
+                <form action="{{ url_for('ai.generate_insights') }}" method="POST" onsubmit="showSpinner()">
+                    <button type="submit" class="btn">Generate AI Insights</button>
+                </form>
+            </div>
+
+            <div id="loading" class="loading-spinner">Generating insights...</div>
+
+            {% if ai_reports %}
+                <div class="insight-list">
+                    {% for report in ai_reports[:2] %}
+                        <article class="insight-card">
+                            <div class="insight-header">
+                                <span class="ai-date">{{ report.created_at.strftime("%d %b %Y - %I:%M %p") }}</span>
+                                <span class="score-badge">{{ report.savings_score }}% Savings</span>
+                            </div>
+                            <p>{{ report.report_text }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No AI reports yet</h3>
+                    <p>Add a transaction first, then generate insights.</p>
+                    <div class="action-row">
+                        <a class="btn" href="{{ url_for('transactions.add_transaction') }}">Add First Transaction</a>
+                        <a class="ghost-btn" href="{{ url_for('transactions.add_transaction') }}">How It Works</a>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+
+        <aside class="panel">
+            <div class="panel-head">
+                <div>
+                    <h3>Quick Stats</h3>
+                    <p>Numbers used by AI</p>
+                </div>
+            </div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <span>Transactions</span>
+                    <strong>{{ transactions|length }}</strong>
+                </div>
+                <div class="mini-card">
+                    <span>AI Reports</span>
+                    <strong>{{ ai_reports|length }}</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Income</span>
+                    <strong>{{ summary.income }}</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Balance</span>
+                    <strong>{{ summary.balance }}</strong>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <section class="table-panel">
+        <div class="panel-head">
+            <div>
+                <h3>Transactions</h3>
+                <p>Newest first</p>
+            </div>
+        </div>
+
+        {% if transactions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td>
+                            {% if t.type == "income" %}
+                                <span class="type-tag type-income">Income</span>
+                            {% else %}
+                                <span class="type-tag type-expense">Expense</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ t.amount }}</td>
+                        <td>{{ t.category }}</td>
+                        <td>{{ t.description or "-" }}</td>
+                        <td>
+                            <form action="{{ url_for('transactions.delete', id=t._id) }}" method="POST">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <h3>Transactions table is empty</h3>
+                <p>New entries will appear here after they are added.</p>
+            </div>
+        {% endif %}
+    </section>
+</section>
+
 <script>
 function showSpinner() {
     document.getElementById("loading").style.display = "block";
