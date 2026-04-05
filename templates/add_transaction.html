@@ -1,29 +1,90 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Add Transaction</h2>
-<form method="POST" class="form">
-    <label>Amount</label>
-    <input type="number" step="0.01" name="amount" required>
+<section class="screen">
+    <div class="screen-head">
+        <div class="screen-copy">
+            <span class="label">Screen 03</span>
+            <h2>Add Transaction</h2>
+            <p>Simple form to add income or expense records.</p>
+        </div>
+        <aside class="cover">
+            <h3>Includes</h3>
+            <ul>
+                <li>Amount</li>
+                <li>Type</li>
+                <li>Category</li>
+                <li>Description</li>
+            </ul>
+        </aside>
+    </div>
 
-    <label>Type</label>
-    <select name="type">
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
-    </select>
+    <div class="form-layout">
+        <section class="form-panel">
+            <div class="panel-head">
+                <div>
+                    <h3>Transaction details</h3>
+                    <p>Saves one transaction</p>
+                </div>
+            </div>
 
-    <label>Category</label>
-    <select name="category">
-        <option>Food</option>
-        <option>Transport</option>
-        <option>Shopping</option>
-        <option>Salary</option>
-        <option>Business</option>
-        <option>Other</option>
-    </select>
+            <form method="POST" class="form">
+                <div class="field">
+                    <label for="amount">Amount</label>
+                    <input id="amount" type="number" step="0.01" name="amount" placeholder="120.00" required>
+                </div>
 
-    <label>Description</label>
-    <input type="text" name="description" placeholder="Optional note">
+                <div class="field">
+                    <label for="type">Type</label>
+                    <select id="type" name="type">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
 
-    <button type="submit">Add Transaction</button>
-</form>
+                <div class="field">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option>Food</option>
+                        <option>Transport</option>
+                        <option>Shopping</option>
+                        <option>Salary</option>
+                        <option>Business</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="description">Description</label>
+                    <input id="description" type="text" name="description" placeholder="Weekly grocery shopping">
+                </div>
+
+                <div class="action-row">
+                    <button type="submit" class="btn">Add Transaction</button>
+                    <a class="ghost-btn" href="{{ url_for('transactions.dashboard') }}">Back to Dashboard</a>
+                </div>
+            </form>
+        </section>
+
+        <aside class="side-panel">
+            <div class="panel-head">
+                <div>
+                    <h3>Notes</h3>
+                    <p>Matches the wireframe flow</p>
+                </div>
+            </div>
+
+            <ul class="help-list">
+                <li>Date is saved automatically by the backend.</li>
+                <li>After submit, the user returns to the dashboard.</li>
+                <li>Categories match the current project scope.</li>
+                <li>The transaction will update totals and future AI reports.</li>
+            </ul>
+
+            <div class="note">
+                This page is styled to match the PPT wireframes instead of the older basic layout.
+            </div>
+        </aside>
+    </div>
+</section>
 {% endblock %}
