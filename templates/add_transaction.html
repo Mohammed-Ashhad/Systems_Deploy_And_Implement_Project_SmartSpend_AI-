@@ -52,6 +52,7 @@
                         <option>Business</option>
                         <option>Other</option>
                     </select>
+                    <input id="category-hidden" type="hidden" value="Salary">
                 </div>
 
                 <div class="field">
@@ -89,23 +90,29 @@
 </section>
 <script>
     const typeSelect = document.getElementById("type");
-    const categoryField = document.getElementById("category-field");
     const categorySelect = document.getElementById("category");
+    const categoryHidden = document.getElementById("category-hidden");
 
-    function syncCategoryVisibility() {
+    function syncCategoryState() {
         if (typeSelect.value === "income") {
             categorySelect.value = "Salary";
-            categoryField.hidden = true;
+            categorySelect.disabled = true;
+            categorySelect.name = "";
+            categoryHidden.name = "category";
+            categoryHidden.value = "Salary";
             return;
         }
 
-        categoryField.hidden = false;
+        categorySelect.disabled = false;
+        categorySelect.name = "category";
+        categoryHidden.name = "";
+
         if (categorySelect.value === "Salary") {
             categorySelect.value = "Food";
         }
     }
 
-    typeSelect.addEventListener("change", syncCategoryVisibility);
-    syncCategoryVisibility();
+    typeSelect.addEventListener("change", syncCategoryState);
+    syncCategoryState();
 </script>
 {% endblock %}
