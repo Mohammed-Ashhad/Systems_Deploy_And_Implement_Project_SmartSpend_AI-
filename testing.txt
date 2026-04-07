@@ -1,0 +1,26 @@
+1. Extract the zip file.
+2. Open the extracted folder in VS Code.
+3. Open the VS Code terminal.
+4. Run:
+   python -m venv .venv
+5. Run:
+   .venv\Scripts\Activate.ps1
+6. Run:
+   pip install -r requirements.txt
+7. If the .env file is already included, keep it as it is. If not, create a .env file and paste:
+   MONGO_URI=mongodb://localhost:27017/
+   GEMINI_API_KEY=PASTE_API_KEY_HERE
+8. Run the project:
+   python app.py
+9. If pushing as a feature, create a branch:
+   git checkout -b feature/salary-selection-label
+10. Commit using this exact message:
+   git add .
+   git commit -m "salary selection label"
+11. Push:
+   git push origin feature/salary-selection-label
+
+
+
+
+   docker compose up --build
